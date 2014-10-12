@@ -1,9 +1,11 @@
-package net.erikprice.smiegel;
+package net.erikprice.smiegel.app;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import net.erikprice.smiegel.R;
 
 
 public class SmiegelActivity extends Activity {

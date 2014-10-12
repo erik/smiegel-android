@@ -1,4 +1,4 @@
-package net.erikprice.smiegel;
+package net.erikprice.smiegel.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-class SMSReceiver extends BroadcastReceiver {
+public class SMSReceiver extends BroadcastReceiver {
     private final String TAG = this.getClass().getSimpleName();
 
     @Override

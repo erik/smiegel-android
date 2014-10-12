@@ -1,9 +1,11 @@
-package net.erikprice.smiegel;
+package net.erikprice.smiegel.app;
 
 import android.os.AsyncTask;
 import android.telephony.SmsMessage;
 
 import com.squareup.okhttp.OkHttpClient;
+
+import net.erikprice.smiegel.api.APIClient;
 
 public class SMSForwarderTask extends AsyncTask<SmsMessage, Void, Void> {
     APIClient client;

@@ -1,9 +1,11 @@
-package net.erikprice.smiegel;
+package net.erikprice.smiegel.app;
 
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+
+import net.erikprice.smiegel.app.SMSReceiver;
 
 public class ServiceCommunicator extends Service {
     private SMSReceiver mSMSReceiver;
