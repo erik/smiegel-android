@@ -1,6 +1,9 @@
 package net.erikprice.smiegel.api;
 
+import android.content.SharedPreferences;
 import android.telephony.SmsMessage;
+import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -40,14 +43,25 @@ public class APIClient {
             HashMap<String, Object> map = gson.fromJson(qrContents, HashMap.class);
 
             String apiHost = (String) map.get("host");
-            Integer apiPort = (Integer) map.get("port");
+            Integer apiPort = ((Double) map.get("port")).intValue();
             String sharedKey = (String) map.get("shared_key");
             String authToken = (String) map.get("auth_token");
 
             return new APIClient(apiHost, apiPort, authToken, sharedKey);
         } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+
             return null;
         }
+    }
+
+    public static APIClient fromPreferences(SharedPreferences prefs) {
+        String apiHost = prefs.getString("host", null);
+        int apiPort = prefs.getInt("port", -1);
+        String sharedKey = prefs.getString("shared_key", null);
+        String authToken = prefs.getString("auth_token", null);
+
+        return new APIClient(apiHost, apiPort, authToken, sharedKey);
     }
 
     private Response post(String path, String body) throws IOException {
@@ -94,5 +108,12 @@ public class APIClient {
 
     public Crypt getCrypt() {
         return crypter;
+    }
+
+    public void serializeToPreferences(SharedPreferences.Editor editor) {
+        editor.putString("host", apiURL.getHost());
+        editor.putInt("port", apiURL.getPort());
+        editor.putString("shared_key", Base64.encodeToString(crypter.getSharedKey(), Base64.DEFAULT));
+        editor.putString("auth_token", Base64.encodeToString(crypter.getAuthToken(), Base64.DEFAULT));
     }
 }

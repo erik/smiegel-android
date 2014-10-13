@@ -1,10 +1,9 @@
 package net.erikprice.smiegel.api;
 
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
-
-import org.apache.commons.codec.binary.Base64;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -37,7 +36,10 @@ public class Crypt {
     private Mac authenticator = null;
 
     public Crypt(String authToken, String sharedKey) {
-        if (authToken.getBytes().length != 32 || sharedKey.getBytes().length != 32) {
+        byte[] authTokenBytes = Base64.decode(authToken, Base64.DEFAULT);
+        byte[] sharedKeyBytes = Base64.decode(sharedKey, Base64.DEFAULT);
+
+        if (authTokenBytes.length != 32 || sharedKeyBytes.length != 32) {
             throw new IllegalArgumentException("bad key(s), needed 32 byte (256 bit)");
         }
 
@@ -46,8 +48,8 @@ public class Crypt {
             this.cipher = Cipher.getInstance("AES/GCM/NoPadding", "SC");
             this.authenticator = Mac.getInstance("HmacSHA256", "SC");
 
-            this.sharedKey = new SecretKeySpec(sharedKey.getBytes(), "AES");
-            this.authTokenKey = new SecretKeySpec(authToken.getBytes(), "AES");
+            this.sharedKey = new SecretKeySpec(sharedKeyBytes, "AES");
+            this.authTokenKey = new SecretKeySpec(authTokenBytes, "AES");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
             e.printStackTrace();
         }
@@ -62,7 +64,7 @@ public class Crypt {
             authenticator.init(this.authTokenKey);
 
             byte[] hmac = authenticator.doFinal(msg.getBytes());
-            return Base64.encodeBase64String(hmac);
+            return Base64.encodeToString(hmac, Base64.DEFAULT);
         } catch (InvalidKeyException e) {
             // This shouldn't be possible...
             e.printStackTrace();
@@ -85,8 +87,8 @@ public class Crypt {
             cipher.init(Cipher.ENCRYPT_MODE, sharedKey);
 
             return new String[]{
-                    Base64.encodeBase64String(cipher.getIV()),
-                    Base64.encodeBase64String(cipher.doFinal(msg.getBytes()))
+                    Base64.encodeToString(cipher.getIV(), Base64.DEFAULT),
+                    Base64.encodeToString(cipher.doFinal(msg.getBytes()), Base64.DEFAULT)
             };
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             // These are all indicative of a programming error, not a runtime one...
@@ -107,8 +109,8 @@ public class Crypt {
             return null;
         }
 
-        final IvParameterSpec ivSpec = new IvParameterSpec(Base64.decodeBase64(tuple[0]));
-        final byte[] cipherText = Base64.decodeBase64(tuple[1]);
+        final IvParameterSpec ivSpec = new IvParameterSpec(Base64.decode(tuple[0], Base64.DEFAULT));
+        final byte[] cipherText = Base64.decode(tuple[1], Base64.DEFAULT);
 
         // TODO: conceivably need to check InvalidKeyException
         // BadPaddingException -> AEADBadTagException -> tampered
