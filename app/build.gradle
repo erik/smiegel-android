@@ -35,4 +35,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:prov:1.51.0.0'
+    compile 'com.jakewharton:butterknife:5.1.2'
 }

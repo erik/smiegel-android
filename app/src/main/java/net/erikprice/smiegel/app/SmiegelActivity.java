@@ -3,18 +3,28 @@ package net.erikprice.smiegel.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.erikprice.smiegel.R;
 import net.erikprice.smiegel.api.APIClient;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 public class SmiegelActivity extends Activity {
     public static final String PREFS_NAME = "SmiegelPreferences";
+    private static final int REQUEST_SETUP = 0;
+
+    @InjectView(R.id.host) TextView hostView;
+    @InjectView(R.id.port) TextView portView;
+    @InjectView(R.id.auth_token) TextView authTokenView;
+    @InjectView(R.id.shared_secret) TextView sharedSecretView;
 
     private APIClient apiClient;
 
@@ -22,6 +32,8 @@ public class SmiegelActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smiegel);
+
+        ButterKnife.inject(this);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         boolean registered = settings.getBoolean("registered", false);
