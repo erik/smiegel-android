@@ -17,11 +17,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".app.SetupActivity"
+            android:label="@string/app_name">
+        </activity>
+
+
         <service
             android:name=".app.ServiceCommunicator"
             android:exported="false"></service>
         <service
-            android:name=".SMSReceiver"
+            android:name=".app.SMSReceiver"
             android:enabled="true"
             android:exported="true"></service>
     </application>

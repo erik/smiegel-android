@@ -43,51 +43,32 @@ public class SmiegelActivity extends Activity {
             Toast toast = Toast.makeText(getApplicationContext(), "Scan the QR code in your browser", Toast.LENGTH_SHORT);
             toast.show();
 
-            try {
-                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-
-                startActivityForResult(intent, 0);
-            } catch (Exception e) {
-                Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-                Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-                startActivity(marketIntent);
-            }
+            Intent intent = new Intent(this, SetupActivity.class);
+            startActivityForResult(intent, 0);
         } else {
             apiClient = APIClient.fromPreferences(settings);
+
+            updateFields();
         }
+    }
+
+    private void updateFields() {
+        hostView.setText(apiClient.getApiURL().getHost());
+        portView.setText("" + apiClient.getApiURL().getPort());
+
+        authTokenView.setText(Base64.encodeToString(apiClient.getCrypt().getAuthToken(), Base64.DEFAULT));
+        sharedSecretView.setText(Base64.encodeToString(apiClient.getCrypt().getSharedKey(), Base64.DEFAULT));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+        if (requestCode == REQUEST_SETUP) {
             if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
-                try {
-                    apiClient = APIClient.fromQR(contents);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                apiClient = APIClient.fromPreferences(settings);
 
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-
-                    editor.putBoolean("registered", true);
-                    apiClient.serializeToPreferences(editor);
-
-                    // Commit the edits!
-                    editor.commit();
-                } catch (Exception e) { // TODO: be less broad
-                    e.printStackTrace();
-
-                    Toast toast = Toast.makeText(getApplicationContext(), "Gotta scan the right QR, you bum", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-
-            if (resultCode == RESULT_CANCELED) {
-                Toast toast = Toast.makeText(getApplicationContext(), "You still need to scan the QR you dummy", Toast.LENGTH_SHORT);
-                toast.show();
-
-                System.exit(-1);
+                updateFields();
             }
         }
     }

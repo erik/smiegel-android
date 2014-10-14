@@ -3,7 +3,6 @@ package net.erikprice.smiegel.api;
 import android.content.SharedPreferences;
 import android.telephony.SmsMessage;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
