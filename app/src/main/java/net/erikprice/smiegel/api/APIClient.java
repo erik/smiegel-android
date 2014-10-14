@@ -63,6 +63,10 @@ public class APIClient {
         return new APIClient(apiHost, apiPort, authToken, sharedKey);
     }
 
+    public URL getApiURL() {
+        return apiURL;
+    }
+
     private Response post(String path, String body) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("signature", crypter.authenticate(body));

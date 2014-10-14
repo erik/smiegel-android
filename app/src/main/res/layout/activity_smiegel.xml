@@ -9,12 +9,95 @@
     tools:context=".SmiegelActivity"
     android:id="@+id/foobar">
 
-    <ExpandableListView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="right"
-        tools:listitem="@android:layout/simple_expandable_list_item_1" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Stay Golden, Bro"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/host"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="28dp"
+        android:layout_toLeftOf="@+id/port"
+        android:layout_toStartOf="@+id/port"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/shared_secret"
+        android:layout_toStartOf="@+id/textView"
+        android:layout_marginTop="32dp"
+        android:layout_below="@+id/host"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/auth_token"
+        android:layout_below="@+id/shared_secret"
+        android:layout_toRightOf="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/port"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_alignTop="@+id/host"
+        android:layout_alignRight="@+id/shared_secret"
+        android:layout_alignEnd="@+id/shared_secret"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_alignBottom="@+id/host" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Host"
+        android:id="@+id/textView2"
+        android:layout_toStartOf="@+id/host"
+        android:layout_alignTop="@+id/host"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Shared secret"
+        android:id="@+id/textView3"
+        android:layout_toStartOf="@+id/shared_secret"
+        android:layout_above="@+id/auth_token"
+        android:layout_toLeftOf="@+id/shared_secret" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Auth Token"
+        android:id="@+id/textView4"
+        android:layout_toStartOf="@+id/auth_token"
+        android:layout_alignTop="@+id/auth_token"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
