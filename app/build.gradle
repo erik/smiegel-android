@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    // FIXME: This is a hack -- remove!
+    maven { url "https://raw.github.com/tommyd3mdi/mvn/master" }
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion "20.0.0"
@@ -30,7 +35,12 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.squareup.okhttp:okhttp:2.0.0'
+
+    // FIXME: These are hacks -- provide actual fix!
+    compile 'com.squareup.okio:okio:1.0.0-REPACKAGED'
+    compile 'com.squareup.okhttp:okhttp:2.0.0-REPACKAGED-OKIO'
+    //compile 'com.squareup.okhttp:okhttp:2.0.0'
+
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
