@@ -17,12 +17,21 @@ import java.util.List;
 public class SMSReceiver extends BroadcastReceiver {
     private static final String TAG = SMSForwarderTask.class.getCanonicalName();
 
-    APIClient client;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
-        SMSForwarderTask task = new SMSForwarderTask();
+
+        Log.d(TAG, "hey i received this");
+
+        APIClient client = APIClient.fromContext(context);
+
+        if (client == null) {
+            return;
+        }
+
+        Log.d(TAG, "shouldn't be here tho");
+
+        SMSForwarderTask task = new SMSForwarderTask(client);
 
         if (extras != null) {
             Object[] smsextras = (Object[]) extras.get("pdus");
@@ -35,6 +44,12 @@ public class SMSReceiver extends BroadcastReceiver {
     }
 
     private class SMSForwarderTask extends AsyncTask<SmsMessage, Void, Void> {
+        private final APIClient client;
+
+        public SMSForwarderTask(APIClient client) {
+            this.client = client;
+        }
+
         @Override
         protected Void doInBackground(SmsMessage... messages) {
             for (SmsMessage msg : messages) {

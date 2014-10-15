@@ -2,13 +2,11 @@ package net.erikprice.smiegel.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.erikprice.smiegel.R;
 import net.erikprice.smiegel.api.APIClient;
@@ -18,7 +16,6 @@ import butterknife.InjectView;
 
 
 public class SmiegelActivity extends Activity {
-    public static final String PREFS_NAME = "SmiegelPreferences";
     private static final int REQUEST_SETUP = 0;
 
     @InjectView(R.id.host) TextView hostView;
@@ -26,7 +23,7 @@ public class SmiegelActivity extends Activity {
     @InjectView(R.id.auth_token) TextView authTokenView;
     @InjectView(R.id.shared_secret) TextView sharedSecretView;
 
-    private APIClient apiClient;
+    private APIClient apiClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,28 +31,21 @@ public class SmiegelActivity extends Activity {
         setContentView(R.layout.activity_smiegel);
 
         ButterKnife.inject(this);
-
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        boolean registered = settings.getBoolean("registered", false);
+        apiClient = APIClient.fromContext(this);
 
         // If the device isn't yet registered go ahead and prompt for the set up.
-        if (!registered) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Scan the QR code in your browser", Toast.LENGTH_SHORT);
-            toast.show();
-
+        if (apiClient == null) {
             Intent intent = new Intent(this, SetupActivity.class);
             startActivityForResult(intent, 0);
-        } else {
-            apiClient = APIClient.fromPreferences(settings);
-
-            updateFields();
+            return;
         }
+
+        updateFields();
     }
 
     private void updateFields() {
         hostView.setText(apiClient.getApiURL().getHost());
-        portView.setText("" + apiClient.getApiURL().getPort());
-
+        portView.setText(Integer.toString(apiClient.getApiURL().getPort()));
         authTokenView.setText(Base64.encodeToString(apiClient.getCrypt().getAuthToken(), Base64.DEFAULT));
         sharedSecretView.setText(Base64.encodeToString(apiClient.getCrypt().getSharedKey(), Base64.DEFAULT));
     }
@@ -65,10 +55,10 @@ public class SmiegelActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SETUP) {
             if (resultCode == RESULT_OK) {
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                apiClient = APIClient.fromPreferences(settings);
-
+                apiClient = APIClient.fromContext(this);
                 updateFields();
+            } else if (resultCode == RESULT_CANCELED) {
+                finish();
             }
         }
     }

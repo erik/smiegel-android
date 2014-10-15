@@ -1,5 +1,6 @@
 package net.erikprice.smiegel.api;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.SmsMessage;
 import android.util.Base64;
@@ -19,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class APIClient {
+    public static final String PREFS_NAME = "SmiegelPreferences";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final Gson gson = new Gson();
-
     private final OkHttpClient client = new OkHttpClient();
 
     private final Crypt crypter;
@@ -61,6 +62,17 @@ public class APIClient {
         String authToken = prefs.getString("auth_token", null);
 
         return new APIClient(apiHost, apiPort, authToken, sharedKey);
+    }
+
+    public static APIClient fromContext(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        boolean registered = settings.getBoolean("registered", false);
+
+        if (registered) {
+            return APIClient.fromPreferences(settings);
+        }
+
+        return null;
     }
 
     public URL getApiURL() {
