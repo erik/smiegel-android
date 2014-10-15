@@ -46,8 +46,8 @@ public class SmiegelActivity extends Activity {
     private void updateFields() {
         hostView.setText(apiClient.getApiURL().getHost());
         portView.setText(Integer.toString(apiClient.getApiURL().getPort()));
-        authTokenView.setText(Base64.encodeToString(apiClient.getCrypt().getAuthToken(), Base64.DEFAULT));
-        sharedSecretView.setText(Base64.encodeToString(apiClient.getCrypt().getSharedKey(), Base64.DEFAULT));
+        authTokenView.setText(Base64.encodeToString(apiClient.getCrypt().getAuthToken(), Base64.NO_WRAP));
+        sharedSecretView.setText(Base64.encodeToString(apiClient.getCrypt().getSharedKey(), Base64.NO_WRAP));
     }
 
     @Override

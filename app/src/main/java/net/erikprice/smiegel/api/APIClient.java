@@ -16,7 +16,9 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class APIClient {
@@ -32,7 +34,7 @@ public class APIClient {
         crypter = new Crypt(authToken, sharedKey);
 
         try {
-            this.apiURL = new URL("https", apiHost, apiPort, "/");
+            this.apiURL = new URL("http", apiHost, apiPort, "/api/");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -109,14 +111,20 @@ public class APIClient {
         }
     }
 
-    public boolean addSms(SmsMessage message) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        map.put("sender", message.getDisplayOriginatingAddress());
-        map.put("body", message.getMessageBody());
-        map.put("timestamp", Long.toString(message.getTimestampMillis()));
+    public boolean addMessages(SmsMessage... messages) throws IOException {
+        List<Map> maps = new ArrayList<>();
 
-        String[] tuple = crypter.encryptShared(gson.toJson(map));
-        Response response = post("sms", gson.toJson(tuple));
+        for (SmsMessage message : messages) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("sender", message.getDisplayOriginatingAddress());
+            map.put("body", message.getMessageBody());
+            map.put("timestamp", message.getTimestampMillis());
+
+            maps.add(map);
+        }
+
+        String[] tuple = crypter.encryptShared(gson.toJson(maps));
+        Response response = post("message", gson.toJson(tuple));
 
         return validateResponse(response);
     }
@@ -128,7 +136,7 @@ public class APIClient {
     public void serializeToPreferences(SharedPreferences.Editor editor) {
         editor.putString("host", apiURL.getHost());
         editor.putInt("port", apiURL.getPort());
-        editor.putString("shared_key", Base64.encodeToString(crypter.getSharedKey(), Base64.DEFAULT));
-        editor.putString("auth_token", Base64.encodeToString(crypter.getAuthToken(), Base64.DEFAULT));
+        editor.putString("shared_key", Base64.encodeToString(crypter.getSharedKey(), Base64.NO_WRAP));
+        editor.putString("auth_token", Base64.encodeToString(crypter.getAuthToken(), Base64.NO_WRAP));
     }
 }

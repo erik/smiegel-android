@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
 
 import net.erikprice.smiegel.api.APIClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SMSReceiver extends BroadcastReceiver {
     private static final String TAG = SMSForwarderTask.class.getCanonicalName();
@@ -20,25 +17,16 @@ public class SMSReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
-
-        Log.d(TAG, "hey i received this");
-
         APIClient client = APIClient.fromContext(context);
+        SMSForwarderTask task = new SMSForwarderTask(client);
 
         if (client == null) {
             return;
         }
 
-        Log.d(TAG, "shouldn't be here tho");
-
-        SMSForwarderTask task = new SMSForwarderTask(client);
-
         if (extras != null) {
-            Object[] smsextras = (Object[]) extras.get("pdus");
-            List<SmsMessage> messages = new ArrayList<>(smsextras.length);
-
-            for (Object smsextra : smsextras) {
-                task.execute(SmsMessage.createFromPdu((byte[]) smsextra));
+            for (byte[] smsExtra : (byte[][]) extras.get("pdus")) {
+                task.execute(SmsMessage.createFromPdu(smsExtra));
             }
         }
     }
@@ -52,17 +40,11 @@ public class SMSReceiver extends BroadcastReceiver {
 
         @Override
         protected Void doInBackground(SmsMessage... messages) {
-            for (SmsMessage msg : messages) {
-
-                // TODO: need retry with backoff.
-                try {
-                    if (!client.addSms(msg)) {
-                        Log.e(TAG, "Failed to forward sms...");
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            // TODO: need retry with backoff.
+            try {
+                client.addMessages(messages);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return null;
         }
