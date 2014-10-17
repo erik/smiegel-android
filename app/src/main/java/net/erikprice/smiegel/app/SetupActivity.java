@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +14,9 @@ import net.erikprice.smiegel.R;
 import net.erikprice.smiegel.api.APIClient;
 
 import org.apache.commons.lang3.math.NumberUtils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,7 +50,12 @@ public class SetupActivity extends Activity {
             return;
         }
 
-        setApiClient(new APIClient(apiHost, apiPort, authToken, sharedKey));
+        try {
+            URL apiUrl = new URL("http", apiHost, apiPort, "/api");
+            setApiClient(new APIClient(apiUrl, "TODO UID", authToken, sharedKey));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.qr_button)
@@ -81,6 +90,7 @@ public class SetupActivity extends Activity {
         if (requestCode == REQUEST_QR) {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
+                Log.d("smiegel", contents);
                 try {
                     setApiClient(APIClient.fromQR(contents));
                 } catch (Exception e) { // TODO: be less broad

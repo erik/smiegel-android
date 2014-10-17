@@ -28,29 +28,26 @@ public class APIClient {
     private final OkHttpClient client = new OkHttpClient();
 
     private final Crypt crypter;
-    private URL apiURL;
+    private final URL apiURL;
+    private final String uid;
 
-    public APIClient(String apiHost, int apiPort, String authToken, String sharedKey) {
-        crypter = new Crypt(authToken, sharedKey);
-
-        try {
-            this.apiURL = new URL("http", apiHost, apiPort, "/api/");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+    public APIClient(URL serverUrl, String uid, String authToken, String sharedKey) {
+        this.crypter = new Crypt(authToken, sharedKey);
+        this.apiURL = serverUrl;
+        this.uid = uid;
     }
 
     public static APIClient fromQR(String qrContents) {
         try {
             HashMap<String, Object> map = gson.fromJson(qrContents, HashMap.class);
 
-            String apiHost = (String) map.get("host");
-            Integer apiPort = ((Double) map.get("port")).intValue();
+            URL serverUrl = new URL((String) map.get("server"));
             String sharedKey = (String) map.get("shared_key");
             String authToken = (String) map.get("auth_token");
+            String uid = (String) map.get("user_id");
 
-            return new APIClient(apiHost, apiPort, authToken, sharedKey);
-        } catch (JsonSyntaxException e) {
+            return new APIClient(serverUrl, uid, authToken, sharedKey);
+        } catch (JsonSyntaxException | MalformedURLException e) {
             e.printStackTrace();
 
             return null;
@@ -58,12 +55,18 @@ public class APIClient {
     }
 
     public static APIClient fromPreferences(SharedPreferences prefs) {
-        String apiHost = prefs.getString("host", null);
-        int apiPort = prefs.getInt("port", -1);
+        String apiServer = prefs.getString("server", null);
         String sharedKey = prefs.getString("shared_key", null);
         String authToken = prefs.getString("auth_token", null);
+        String uid = prefs.getString("user_id", null);
 
-        return new APIClient(apiHost, apiPort, authToken, sharedKey);
+        try {
+            return new APIClient(new URL(apiServer), uid, authToken, sharedKey);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+
+            return null;
+        }
     }
 
     public static APIClient fromContext(Context context) {
@@ -77,14 +80,11 @@ public class APIClient {
         return null;
     }
 
-    public URL getApiURL() {
-        return apiURL;
-    }
-
     private Response post(String path, String body) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("signature", crypter.authenticate(body));
         map.put("body", body);
+        map.put("user_id", uid);
 
         Request request = new Request.Builder()
                 .url(new URL(apiURL, path))
@@ -133,9 +133,13 @@ public class APIClient {
         return crypter;
     }
 
+    public URL getApiURL() {
+        return apiURL;
+    }
+
     public void serializeToPreferences(SharedPreferences.Editor editor) {
-        editor.putString("host", apiURL.getHost());
-        editor.putInt("port", apiURL.getPort());
+        editor.putString("server", apiURL.toString());
+        editor.putString("user_id", uid);
         editor.putString("shared_key", Base64.encodeToString(crypter.getSharedKey(), Base64.NO_WRAP));
         editor.putString("auth_token", Base64.encodeToString(crypter.getAuthToken(), Base64.NO_WRAP));
     }

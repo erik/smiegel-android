@@ -36,8 +36,8 @@ public class Crypt {
     private Mac authenticator = null;
 
     public Crypt(String authToken, String sharedKey) {
-        byte[] authTokenBytes = Base64.decode(authToken, Base64.NO_WRAP);
-        byte[] sharedKeyBytes = Base64.decode(sharedKey, Base64.NO_WRAP);
+        byte[] authTokenBytes = Base64.decode(authToken, Base64.DEFAULT);
+        byte[] sharedKeyBytes = Base64.decode(sharedKey, Base64.DEFAULT);
 
         if (authTokenBytes.length != 32 || sharedKeyBytes.length != 32) {
             throw new IllegalArgumentException("bad key(s), needed 32 byte (256 bit)");

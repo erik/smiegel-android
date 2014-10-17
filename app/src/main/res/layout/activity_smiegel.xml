@@ -100,4 +100,21 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sim SMS"
+        android:id="@+id/send_sms"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="forget conf"
+        android:id="@+id/forget"
+        android:layout_alignTop="@+id/send_sms"
+        android:layout_toRightOf="@+id/send_sms"
+        android:layout_toEndOf="@+id/send_sms"/>
+
 </RelativeLayout>

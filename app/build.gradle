@@ -37,13 +37,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // FIXME: These are hacks -- provide actual fix!
-    compile 'com.squareup.okio:okio:1.0.0-REPACKAGED'
-    compile 'com.squareup.okhttp:okhttp:2.0.0-REPACKAGED-OKIO'
     //compile 'com.squareup.okhttp:okhttp:2.0.0'
 
+    compile 'com.squareup.okio:okio:1.0.0-REPACKAGED'
+    compile 'com.squareup.okhttp:okhttp:2.0.0-REPACKAGED-OKIO'
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:prov:1.51.0.0'
     compile 'com.jakewharton:butterknife:5.1.2'
+    compile 'com.android.support:support-v4:20.0.0'
 }
