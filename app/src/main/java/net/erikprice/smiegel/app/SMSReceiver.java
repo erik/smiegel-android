@@ -42,7 +42,9 @@ public class SMSReceiver extends BroadcastReceiver {
         protected Void doInBackground(SmsMessage... messages) {
             // TODO: need retry with backoff.
             try {
-                client.addMessages(messages);
+                for (SmsMessage msg : messages) {
+                    client.addMessage(msg);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

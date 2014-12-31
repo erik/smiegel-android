@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.SmsMessage;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -111,20 +112,15 @@ public class APIClient {
         }
     }
 
-    public boolean addMessages(SmsMessage... messages) throws IOException {
-        List<Map> maps = new ArrayList<>();
+    public boolean addMessage(SmsMessage message) throws IOException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("author", message.getDisplayOriginatingAddress());
+        map.put("number", message.getDisplayOriginatingAddress());
+        map.put("text", message.getMessageBody());
+        map.put("timestamp", message.getTimestampMillis());
 
-        for (SmsMessage message : messages) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("sender", message.getDisplayOriginatingAddress());
-            map.put("body", message.getMessageBody());
-            map.put("timestamp", message.getTimestampMillis());
-
-            maps.add(map);
-        }
-
-        String[] tuple = crypter.encryptShared(gson.toJson(maps));
-        Response response = post("message", gson.toJson(tuple));
+        String[] tuple = crypter.encryptShared(gson.toJson(map));
+        Response response = this.post("/api/message/receive", gson.toJson(tuple));
 
         return validateResponse(response);
     }

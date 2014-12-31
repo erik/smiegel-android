@@ -38,7 +38,7 @@ public class SmiegelActivity extends Activity {
                 try {
                     String pdu = "07914151551512f2040B916105551511f100006060605130308A04D4F29C0E";
                     SmsMessage sms = SmsMessage.createFromPdu(new BigInteger(pdu, 16).toByteArray());
-                    apiClient.addMessages(sms);
+                    apiClient.addMessage(sms);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

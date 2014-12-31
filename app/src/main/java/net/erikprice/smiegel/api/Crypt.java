@@ -10,6 +10,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -85,9 +86,16 @@ public class Crypt {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, sharedKey);
 
+            byte[] iv = cipher.getIV();
+            byte[] cipherAndTag = cipher.doFinal(msg.getBytes());
+
+            byte[] cipher = Arrays.copyOfRange(cipherAndTag, 0, cipherAndTag.length - 16);
+            byte[] tag = Arrays.copyOfRange(cipherAndTag, cipherAndTag.length - 16, cipherAndTag.length);
+
             return new String[]{
-                    Base64.encodeToString(cipher.getIV(), Base64.NO_WRAP),
-                    Base64.encodeToString(cipher.doFinal(msg.getBytes()), Base64.NO_WRAP)
+                    Base64.encodeToString(iv, Base64.NO_WRAP),
+                    Base64.encodeToString(tag, Base64.NO_WRAP),
+                    Base64.encodeToString(cipher, Base64.NO_WRAP)
             };
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             // These are all indicative of a programming error, not a runtime one...
