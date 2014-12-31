@@ -15,6 +15,7 @@ import net.erikprice.smiegel.api.APIClient;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -119,6 +120,17 @@ public class SetupActivity extends Activity {
 
         // Commit the edits!
         editor.commit();
+
+        try {
+            // Send over our address book
+            apiClient.sendContacts(this);
+        } catch(IOException e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(getApplicationContext(), "Failed to upload contacts", Toast.LENGTH_LONG);
+            toast.show();
+
+            return;
+        }
 
         setResult(Activity.RESULT_OK, new Intent());
         finish();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsMessage;
 
 import net.erikprice.smiegel.api.APIClient;
@@ -14,7 +15,6 @@ import java.io.IOException;
 public class SMSReceiver extends BroadcastReceiver {
     private static final String TAG = SMSForwarderTask.class.getCanonicalName();
 
-    @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
         APIClient client = APIClient.fromContext(context);
@@ -24,10 +24,9 @@ public class SMSReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (extras != null) {
-            for (byte[] smsExtra : (byte[][]) extras.get("pdus")) {
-                task.execute(SmsMessage.createFromPdu(smsExtra));
-            }
+        SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+        for (SmsMessage msg : messages) {
+            task.execute(msg);
         }
     }
 

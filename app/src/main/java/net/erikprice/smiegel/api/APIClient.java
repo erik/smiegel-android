@@ -1,10 +1,11 @@
 package net.erikprice.smiegel.api;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.telephony.SmsMessage;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.provider.ContactsContract.CommonDataKinds.Phone;
+import static android.provider.ContactsContract.Contacts;
 
 public class APIClient {
     public static final String PREFS_NAME = "SmiegelPreferences";
@@ -79,6 +83,48 @@ public class APIClient {
         }
 
         return null;
+    }
+
+    public void sendContacts(Context context) throws IOException {
+        List<Map<String, Object>> contacts = new ArrayList<>();
+        ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(Contacts.CONTENT_URI, null, null, null, null);
+
+        while (c.moveToNext()) {
+            // Just skip anything that doesn't have a phone number
+            if (c.getInt(c.getColumnIndex(Contacts.HAS_PHONE_NUMBER)) == 0) {
+                continue;
+            }
+
+            List<Map<String, String>> numbers = new ArrayList<>();
+            int id = c.getInt(c.getColumnIndex(Contacts._ID));
+            Cursor pCursor = cr.query(
+                    Phone.CONTENT_URI,
+                    null,
+                    Phone.CONTACT_ID + " = ?", new String[]{Integer.toString(id)},
+                    null);
+
+            while (pCursor.moveToNext()) {
+                Map<String, String> entry = new HashMap<>();
+
+                int type = pCursor.getInt(pCursor.getColumnIndex(Phone.TYPE));
+                String typeStr = Phone.getTypeLabel(context.getResources(), type, "").toString();
+
+
+                entry.put("number", pCursor.getString(pCursor.getColumnIndex(Phone.NUMBER)));
+                entry.put("type", typeStr);
+
+                numbers.add(entry);
+            }
+
+            Map<String, Object> contact = new HashMap<>();
+            contact.put("name", c.getString(c.getColumnIndex(Contacts.DISPLAY_NAME)));
+            contact.put("numbers", numbers);
+
+            contacts.add(contact);
+        }
+
+        this.post("/api/contacts", gson.toJson(contacts));
     }
 
     private Response post(String path, String body) throws IOException {
