@@ -17,8 +17,6 @@ android {
     }
     buildTypes {
         release {
-            runProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -42,7 +40,7 @@ dependencies {
     compile 'com.squareup.okio:okio:1.0.0-REPACKAGED'
     compile 'com.squareup.okhttp:okhttp:2.0.0-REPACKAGED-OKIO'
     compile 'org.apache.commons:commons-lang3:3.0'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:prov:1.51.0.0'
     compile 'com.jakewharton:butterknife:5.1.2'
