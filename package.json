@@ -1,0 +1,51 @@
+{
+  "name": "smiegel-android",
+  "version": "0.0.1",
+  "description": "TODO: write me",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cordova": "^3.4.1-0.1.0",
+    "jquery": "~2.1.0",
+    "react": "^0.12.2",
+    "reflux": "^0.2.1",
+    "underscore": "~1.1.2"
+  },
+  "devDependencies": {
+    "reactify": "~0.13.1",
+    "envify": "~1.2.1",
+    "browserify-shim": "~3.4.1",
+    "browserify": "~3.36.0",
+    "gulp-changed": "~0.3.0",
+    "gulp-imagemin": "~0.1.5",
+    "gulp": "~3.6.0",
+    "gulp-util": "~2.2.14",
+    "gulp-less": "~1.2.3",
+    "gulp-recess": "~0.3.1",
+    "vinyl-source-stream": "~0.1.1",
+    "wrench": "~1.5.8"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ],
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "plugin": {
+      "exports": "plugin",
+      "depends": [
+        "jquery:$"
+      ]
+    }
+  }
+}
