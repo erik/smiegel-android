@@ -7,15 +7,24 @@ module.exports = {
   recvMessage: function(message) {
     this._postData(
       '/api/message/receive',
-      this.formatRequest(1, JSON.stringify(message)),
+      this.formatRequest(JSON.stringify(message)),
       function(response) {
-        var js = JSON.parse(response);
-        alert(js);
+        alert(response);
       }
     );
   },
 
-  formatRequest: function(user_id, body) {
+  sendContacts: function(contacts) {
+    this._postData(
+      '/api/contacts',
+      this.formatRequest(JSON.stringify(contacts)),
+      function(response) {
+        alert(response);
+      }
+    );
+  },
+
+  formatRequest: function(body) {
     var encrypted = JSON.stringify(CryptoUtil.encrypt(body));
     var signature = CryptoUtil.sign(encrypted);
 

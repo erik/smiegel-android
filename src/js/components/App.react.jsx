@@ -47,7 +47,9 @@ var App = React.createClass({
   },
 
   _sendContacts: function() {
-    alert('send contacts');
+    Util.getContacts(function(c) {
+      APIUtil.sendContacts(c);
+    });
   },
 
   _spoofSms: function() {
