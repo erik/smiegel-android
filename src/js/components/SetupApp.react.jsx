@@ -6,6 +6,7 @@ var APIUtil = require('../utils/APIUtil');
 var Util = require('../utils/Util');
 
 var Header = require('./Header.react');
+var Settings = require('./Settings.react');
 
 var SetupApp = React.createClass({
   componentWillMount: function () {
@@ -20,6 +21,7 @@ var SetupApp = React.createClass({
     return (
       <div className="app">
         <Header title="Smiegel Setup" />
+        <Settings />
 
         <div className="content">
           <p className="content-padded"> hello world. I am app.</p>

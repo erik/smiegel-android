@@ -4,6 +4,7 @@ var $ = require('jquery');
 var KeyStore = require('../stores/KeyStore');
 
 var CryptoUtil = require('../utils/CryptoUtil');
+var Util = require('../utils/Util');
 
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
       '/api/message/receive',
       this.formatRequest(JSON.stringify(message)),
       function(response) {
-        alert(response);
+        Util.alert(response);
       }
     );
   },

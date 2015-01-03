@@ -5,9 +5,20 @@ var KeyStore = require('./stores/KeyStore');
 var App = require('./components/App.react');
 var SetupApp = require('./components/SetupApp.react');
 
-var app;
+var Util = require('./utils/Util');
 
-if (KeyStore.isInitialized()) { app = <App />;      }
-else                          { app = <SetupApp />; }
 
-React.render(app, document.getElementById('react'));
+function onDeviceReady() {
+  Util.initialize();
+
+  var elem = document.getElementById('react');
+
+  if (KeyStore.isInitialized()) {
+    React.render(<App />, elem);
+    return;
+  }
+
+  React.render(<SetupApp />, elem);
+}
+
+document.addEventListener("deviceready", onDeviceReady, false);

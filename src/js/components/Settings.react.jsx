@@ -83,7 +83,15 @@ var Settings = React.createClass({
       conf[ref] = value;
 
       self.refs[ref].getDOMNode().value = '';
-      KeyStore.updateCredentials(conf);
+      try {
+        KeyStore.updateCredentials(conf);
+      } catch (e) {
+        if (e instanceof InvalidCharacterError) {
+          Util.alert('Value not in base64 format');
+        } else {
+          Util.alert('Bad value: ' + e);
+        }
+      }
     };
   },
 

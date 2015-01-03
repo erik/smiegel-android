@@ -1,6 +1,14 @@
 /* Odds and ends. */
 
 module.exports = {
+  initialize: function() {
+    // navigator.notification.* is just too many characters.
+    this.alert   = navigator.notification.alert;
+    this.confirm = navigator.notification.confirm;
+    this.prompt  = navigator.notification.prompt;
+    this.beep    = navigator.notification.beep;
+  },
+
   scan: function(callback) {
     var scanner = cordova.require("cordova/plugin/BarcodeScanner");
 
