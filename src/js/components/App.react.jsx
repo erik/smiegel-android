@@ -26,13 +26,10 @@ var App = React.createClass({
 
         <div className="content">
           <div className="content-padded">
-            hello world. I am app.
-
-            <p> {JSON.stringify(KeyStore.getCredentials(), undefined, 2)} </p>
 
             { this._renderButton('Send contacts', this._sendContacts) }
             { this._renderButton('Spoof SMS', this._spoofSms) }
-
+            { this._renderButton('Ping server', this._pingServer) }
           </div>
         </div>
       </div>
@@ -63,6 +60,10 @@ var App = React.createClass({
     };
 
     APIUtil.recvMessage(message);
+  },
+
+  _pingServer: function() {
+    APIUtil.ping();
   }
 });
 

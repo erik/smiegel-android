@@ -23,9 +23,32 @@ module.exports = {
       '/api/contacts',
       this.formatRequest(JSON.stringify(contacts)),
       function(response) {
-        alert(response);
+        Util.alert(response);
       }
     );
+  },
+
+  ping: function() {
+    var rnd = CryptoUtil.genRandomBytes(16);
+    var rndstr = CryptoUtil.arrayToBase64(rnd);
+
+    var postData = {
+      'user_id': KeyStore.getUserId(),
+      'body': rndstr,
+      'signature': CryptoUtil.sign(rndstr)
+    };
+
+    this._postData(
+      '/api/ping',
+      postData,
+      function(response) {
+        if (response === rndstr) {
+          Util.alert('PING success');
+        } else {
+          Util.alert('PING failed! Received: "' + response +'" expected "' + rndstr);
+        }
+      }
+    )
   },
 
   formatRequest: function(body) {
@@ -41,13 +64,14 @@ module.exports = {
     return msg;
   },
 
-  _postData: function(endpoint, body, cb) {
+  _postData: function(endpoint, body, cb, errorFn) {
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
       url: KeyStore.getUri() + endpoint,
       data: JSON.stringify(body),
       dataType: "json",
+      error: errorFn || function() {}
     }).done(function(data) {
       if (cb) {
         cb(data.body);
