@@ -19,22 +19,30 @@ var KeyStore = Reflux.createStore({
   },
 
   updateCredentials: function(creds) {
+    this._validateCredentials(creds);
+
     var oldCreds = this.getCredentials();
 
     $.extend(oldCreds, creds);
-
-    // TODO: check all properties exist
 
     store.set('creds', oldCreds);
     this.trigger();
   },
 
   setCredentials: function(creds) {
+    this._validateCredentials(creds);
+
     // TODO: check all properties exist
     creds.isInitialized = true;
 
     store.set('creds', creds);
     this.trigger();
+  },
+
+  /** heads up this throws on error and returns nothing on success */
+  _validateCredentials: function(creds) {
+    window.atob(creds.auth_token || '');
+    window.atob(creds.shared_key || '');
   },
 
   getToken: function() {
