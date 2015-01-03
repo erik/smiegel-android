@@ -5,7 +5,8 @@ var KeyStore = require('../stores/KeyStore');
 var APIUtil = require('../utils/APIUtil');
 var Util = require('../utils/Util');
 
-var Header = require('./Header.react');
+var Header   = require('./Header.react');
+var Settings = require('./Settings.react');
 
 
 var App = React.createClass({
@@ -21,6 +22,7 @@ var App = React.createClass({
     return (
       <div className="app">
         <Header title="Smiegel" />
+        <Settings />
 
         <div className="content">
           <div className="content-padded">

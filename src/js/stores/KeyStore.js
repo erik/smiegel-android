@@ -11,22 +11,30 @@ var KeyStore = Reflux.createStore({
   },
 
   clearCredentials: function() {
-    store.set('creds', {isInitialized: false});
+    store.set('creds', { isInitialized: false });
   },
 
   getCredentials: function() {
     return store.get('creds') || {};
   },
 
-  setCredentials: function(creds) {
+  updateCredentials: function(creds) {
     var oldCreds = this.getCredentials();
 
     $.extend(oldCreds, creds);
-    oldCreds.isInitialized = true;
 
     // TODO: check all properties exist
 
     store.set('creds', oldCreds);
+    this.trigger();
+  },
+
+  setCredentials: function(creds) {
+    // TODO: check all properties exist
+    creds.isInitialized = true;
+
+    store.set('creds', creds);
+    this.trigger();
   },
 
   getToken: function() {
@@ -37,6 +45,14 @@ var KeyStore = Reflux.createStore({
   getSecret: function() {
     var sec = this.getCredentials().shared_key;
     return window.atob(sec);
+  },
+
+  getUserId: function() {
+    return this.getCredentials().user_id;
+  },
+
+  getUri: function() {
+    return this.getCredentials().server;
   }
 });
 

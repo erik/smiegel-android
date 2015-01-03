@@ -33,7 +33,6 @@ var SetupApp = React.createClass({
   },
 
   _scanResult: function(result) {
-
     try {
       var map = JSON.parse(result);
       KeyStore.setCredentials(map);

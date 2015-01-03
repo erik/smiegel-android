@@ -1,7 +1,10 @@
 var store = require('../vendor/store');
 var $ = require('jquery');
 
+var KeyStore = require('../stores/KeyStore');
+
 var CryptoUtil = require('../utils/CryptoUtil');
+
 
 module.exports = {
   recvMessage: function(message) {
@@ -28,10 +31,8 @@ module.exports = {
     var encrypted = JSON.stringify(CryptoUtil.encrypt(body));
     var signature = CryptoUtil.sign(encrypted);
 
-    var creds = store.get('creds') || {};
-
     var msg = {
-      'user_id': creds.user_id,
+      'user_id': KeyStore.getUserId(),
       'body': encrypted,
       'signature': signature
     };
@@ -43,7 +44,7 @@ module.exports = {
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
-      url: 'http://192.168.1.109:5000' + endpoint,
+      url: KeyStore.getUri() + endpoint,
       data: JSON.stringify(body),
       dataType: "json",
     }).done(function(data) {
